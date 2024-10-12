@@ -1,0 +1,11 @@
+services:
+  group_center_web_tools:
+    image: group-center-web-tools
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 15001:15001
+    container_name: group-center-web-tools
+    network_mode: host
+    restart: always
