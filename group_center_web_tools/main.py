@@ -1,6 +1,14 @@
 # main.py
-from group_center_web_tools.net.api import app
 
-if __name__ == '__main__':
-    # 运行Flask应用
-    app.run(host='::', port=15001)
+import uvicorn
+from fastapi_main import app
+
+if __name__ == "__main__":
+    host = "0.0.0.0"
+    port = 15000
+    reload = True
+
+    if reload:
+        uvicorn.run("fastapi_main:app", host=host, port=port, reload=True)
+    else:
+        uvicorn.run(app, host=host, port=port, reload=False)

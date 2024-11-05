@@ -5,7 +5,12 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 15001:15001
+      - "15000:15000"
     container_name: group-center-web-tools
+
+    # Host Mode only support Linux
+    # Only host mode can get the real IP address of the client
     network_mode: host
+    # network_mode: bridge
+
     restart: always
