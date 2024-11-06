@@ -1,8 +1,17 @@
+# Basic FastAPI
 fastapi
 uvicorn
 
+python-multipart
+
+# FastAPI Page
+jinja2
+
+# Progress Bar
 tqdm
 
+# PDF
 PyMuPDF
 
+# SVG
 CairoSVG

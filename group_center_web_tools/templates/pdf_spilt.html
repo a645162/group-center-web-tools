@@ -1,0 +1,84 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Color Spilt</title>
+    <link rel="stylesheet" href="/static/pdf_spilt.css">
+</head>
+<body>
+<h1>Upload PDF for Splitting</h1>
+<form action="/api/pdf/split/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".pdf" required>
+    <button type="submit">Upload</button>
+</form>
+
+<div id="status"></div>
+<div id="downloadLinks"></div>
+
+<script>
+    async function checkStatus(taskId) {
+        const response = await fetch(`/api/pdf/split/status/${taskId}`);
+        const data = await response.json();
+
+        // document.getElementById('status').innerText = JSON.stringify(data, null, 2);
+
+        dom_status = document.getElementById('status');
+
+        if (data.status === "failed") {
+            dom_status.innerHTML = `
+                <p>Task failed: ${data.error}</p>
+            `;
+            return;
+        }
+
+        if (data.status === "processing") {
+            progress = data.progress;
+            dom_status.innerHTML = `
+                <p>Task is processing: ${progress}%</p>
+            `;
+        }
+
+        if (data.status === "completed") {
+            dom_status.innerHTML = `
+                <p>Task completed</p>
+            `;
+
+            color_html = ""
+            grayscale_html = ""
+
+            if (data.color_pdf !== "") {
+                color_html = `
+                        <a href="/api/pdf/split/download/${taskId}/color">Download Color PDF</a><br>
+                    `;
+            }
+            if (data.grayscale_pdf !== "") {
+                grayscale_html = `
+                        <a href="/api/pdf/split/download/${taskId}/grayscale">Download Grayscale PDF</a><br>
+                    `;
+            }
+            document.getElementById('downloadLinks').innerHTML = `
+                    ${color_html}
+                    ${grayscale_html}
+                `;
+        } else {
+            // 每500毫秒检查一次状态
+            setTimeout(() => checkStatus(taskId), 500);
+        }
+    }
+
+    document.querySelector('form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const response = await fetch('/api/pdf/split/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        document.getElementById('status').innerText = JSON.stringify(data, null, 2);
+        checkStatus(data.task_id);
+    });
+</script>
+</body>
+</html>

@@ -1,4 +1,6 @@
 # PyMuPDF
+from pathlib import Path
+
 import fitz
 import tqdm
 
@@ -66,14 +68,33 @@ def is_page_color(page, check_text=False) -> bool:
     return False
 
 
-def split_pdf_by_color(input_path, color_output_path, grayscale_output_path):
+def split_pdf_by_color(
+        input_path: str | Path,
+        color_output_path: str | Path = "",
+        grayscale_output_path: str | Path = "",
+        progress_func: callable = None
+):
     """Split a PDF into color and grayscale pages"""
+
+    if not color_output_path:
+        color_output_path = input_path.replace(".pdf", "_color.pdf")
+
+    if not grayscale_output_path:
+        grayscale_output_path = input_path.replace(".pdf", "_grayscale.pdf")
+
     doc = fitz.open(input_path)
     color_doc = fitz.open()
     grayscale_doc = fitz.open()
 
     # for page_num in range(len(doc)):
-    for page_num in tqdm.tqdm(range(len(doc))):
+    page_count = len(doc)
+    for page_num in tqdm.tqdm(range(page_count)):
+        percentage = page_num / page_count
+        percentage = round(percentage * 100, 0)
+        percentage = int(percentage)
+        if progress_func:
+            progress_func(percentage)
+
         page = doc.load_page(page_num)
         is_color = is_page_color(
             page,
@@ -85,8 +106,13 @@ def split_pdf_by_color(input_path, color_output_path, grayscale_output_path):
         else:
             grayscale_doc.insert_pdf(doc, from_page=page_num, to_page=page_num)
 
-    color_doc.save(color_output_path)
-    grayscale_doc.save(grayscale_output_path)
+    # Color Document
+    if len(color_doc) != 0:
+        color_doc.save(color_output_path)
+
+    # Grayscale Document
+    if len(grayscale_doc) != 0:
+        grayscale_doc.save(grayscale_output_path)
 
 
 if __name__ == "__main__":
