@@ -1,4 +1,5 @@
-FROM python:3.13.0-alpine3.20
+# https://hub.docker.com/_/python
+FROM python:3.12.7-alpine3.20
 
 LABEL MAINTAINER="Haomin Kong" AUTHOR="Haomin Kong" VERSION=3
 ENV DOCKER_MODE="Haomin Kong"
