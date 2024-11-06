@@ -9,7 +9,7 @@ from pdf.spilt.api_routes import spilt_router
 
 app = FastAPI()
 
-# 注册路由
+# Register routers
 app.include_router(ip_router, prefix="/api/net")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

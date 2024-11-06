@@ -18,11 +18,9 @@ RUN    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 # Install Software
 ## mirrors.aliyun.com
 ## mirrors.ustc.edu.cn
-RUN    sed -i 's/\r$//' $BASE_PATH/*.sh \
-    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+RUN    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk add --no-cache bash \
     && apk add --no-cache build-base python3 py3-pip cairo pango libffi-dev pango-dev cairo-dev \
-    && rm -rf ~/.cache/pip \
     && rm -rf /tmp/*
 
 # Copy Directory
@@ -41,7 +39,8 @@ RUN    pip3 --no-cache-dir install -r $BASE_PATH/requirements.txt \
     && rm -rf /tmp/*
 
 # Create Logs Directory
-RUN    mkdir $BASE_PATH/logs \
+RUN    sed -i 's/\r$//' $BASE_PATH/*.sh \
+    && mkdir $BASE_PATH/logs \
     && chmod +x "$BASE_PATH/docker_start.sh"
 
 ENTRYPOINT ["/usr/local/Software/group_center_web_tools/docker_start.sh"]
