@@ -14,3 +14,6 @@ services:
     # network_mode: bridge
 
     restart: always
+
+    volumes:
+      - "./group_center_web_tools/data:/usr/local/Software/group_center_web_tools/data"

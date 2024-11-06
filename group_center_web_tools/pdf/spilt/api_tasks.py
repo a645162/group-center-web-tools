@@ -32,6 +32,9 @@ def split_pdf_by_color_task(input_pdf: Path, task_id: str):
         ".pdf", "_grayscale.pdf"
     )
 
+    if not OUTPUT_DIR.exists():
+        OUTPUT_DIR.mkdir(parents=True)
+
     color_pdf = OUTPUT_DIR / f"{color_pdf_name}"
     grayscale_pdf = OUTPUT_DIR / f"{grayscale_pdf_name}"
 

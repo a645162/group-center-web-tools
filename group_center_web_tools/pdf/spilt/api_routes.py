@@ -25,6 +25,9 @@ async def upload_file(file: UploadFile, background_tasks: BackgroundTasks):
         ".pdf", f"_{task_id}.pdf"
     )
 
+    if not UPLOAD_DIR.exists():
+        UPLOAD_DIR.mkdir(parents=True)
+
     file_path = UPLOAD_DIR / f"{file_name_new}"
 
     save_uploaded_file(file, file_path)
