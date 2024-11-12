@@ -3,7 +3,7 @@
 import secrets
 from pathlib import Path
 
-from .config import OUTPUT_DIR
+from .config import OUTPUT_DIR, get_output_file_name
 from fastapi import UploadFile
 
 from group_center_web_tools.pdf.spilt.spilt_color \
@@ -25,12 +25,7 @@ def save_uploaded_file(file: UploadFile, file_path: Path):
 def split_pdf_by_color_task(input_pdf: Path, task_id: str):
     original_name = input_pdf.name
 
-    color_pdf_name = original_name.replace(
-        ".pdf", "_color.pdf"
-    )
-    grayscale_pdf_name = original_name.replace(
-        ".pdf", "_grayscale.pdf"
-    )
+    color_pdf_name, grayscale_pdf_name = get_output_file_name(original_name)
 
     if not OUTPUT_DIR.exists():
         OUTPUT_DIR.mkdir(parents=True)
